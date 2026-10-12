@@ -1,0 +1,9 @@
+.git
+.gitignore
+.env
+.env.*
+**/.env
+**/.env.*
+target/
+**/target/
+*.zip
