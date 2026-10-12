@@ -1,0 +1,26 @@
+﻿import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Plus, PawPrint, X, UserRound, Pencil, Trash2 } from "lucide-react";
+import { petApi } from "../api";
+import SessionActions from "../SessionActions";
+import "./MyPets.css";
+const empty = { name: "", species: "Dog", breed: "", gender: "Male", age: "" };
+function MyPets() {
+  const navigate = useNavigate(); const [pets, setPets] = useState([]); const [showModal, setShowModal] = useState(false); const [editing, setEditing] = useState(null);
+  const [formData, setFormData] = useState(empty); const [loading, setLoading] = useState(true); const [busy, setBusy] = useState(false); const [error, setError] = useState("");
+  async function refresh() { setLoading(true); try { setPets(await petApi.list()); setError(""); } catch (err) { setError(err.message); } finally { setLoading(false); } }
+  useEffect(() => { let active = true; petApi.list().then(value => { if (active) setPets(value); }).catch(err => { if (active) setError(err.message); }).finally(() => { if (active) setLoading(false); }); return () => { active = false; }; }, []);
+  const handleChange = e => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  function openEdit(pet) { setEditing(pet); setFormData({ name: pet.name, species: pet.species, breed: pet.breed || "", gender: pet.gender || "Male", age: pet.age ?? "" }); setShowModal(true); }
+  function closeModal() { setShowModal(false); setEditing(null); setFormData(empty); }
+  async function submit(e) { e.preventDefault(); setBusy(true); setError(""); const payload = { ...formData, age: formData.age === "" ? null : Number(formData.age) }; try { if (editing) await petApi.update(editing.id, payload); else await petApi.create(payload); closeModal(); await refresh(); } catch (err) { setError(err.message); } finally { setBusy(false); } }
+  async function remove(pet) { if (!window.confirm(`Delete ${pet.name}? This will also remove that pet's linked care records if supported by your database.`)) return; try { await petApi.remove(pet.id); await refresh(); } catch (err) { setError(err.message); } }
+  return <div className="pets-page"><SessionActions/><div className="pets-header"><div><p className="pets-eyebrow">YOUR COMPANIONS</p><h1>My Pets 🐾</h1><p className="pets-subtitle">Keep all your companions' information in one place.</p></div><button className="add-pet-btn" onClick={() => { setEditing(null); setFormData(empty); setShowModal(true); }}><Plus size={20}/>Add New Pet</button></div>
+    {error && <p className="form-error" role="alert">{error}</p>}{loading ? <p>Loading your pets…</p> : pets.length === 0 ? <p>You haven’t added a pet yet. Add a new pet to get started.</p> : <div className="pets-grid">{pets.map(pet => <div className="pet-card" key={pet.id}><div className="pet-card-top"><div className="pet-avatar"><PawPrint size={34}/></div><span className="pet-status healthy">Your pet</span></div><div className="pet-info"><h2>{pet.name}</h2><p className="pet-breed">{pet.breed || pet.species}</p><div className="pet-details"><span>{pet.age == null ? "Age not added" : `${pet.age} years`}</span><span>·</span><span>{pet.gender || "Gender not added"}</span><span>·</span><span>{pet.species}</span></div></div><button className="view-profile-btn" onClick={() => navigate(`/pets/${pet.id}`)}>View Profile</button><div className="pet-card-actions"><button type="button" onClick={() => openEdit(pet)} aria-label={`Edit ${pet.name}`}><Pencil size={15}/> Edit</button><button type="button" onClick={() => remove(pet)} aria-label={`Delete ${pet.name}`}><Trash2 size={15}/> Delete</button></div></div>)}</div>}
+    {showModal && <div className="modal-overlay"><div className="add-pet-modal"><button className="modal-close" onClick={closeModal} aria-label="Close"><X size={20}/></button><div className="modal-icon"><PawPrint size={28}/></div><h2>{editing ? "Edit Pet" : "Add a New Pet"}</h2><p>Tell us a little about your furry companion.</p><form onSubmit={submit}><div className="form-group"><label>Pet Name</label><input name="name" value={formData.name} onChange={handleChange} required/></div><div className="form-row"><div className="form-group"><label>Species</label><select name="species" value={formData.species} onChange={handleChange}><option>Dog</option><option>Cat</option><option>Other</option></select></div><div className="form-group"><label>Gender</label><select name="gender" value={formData.gender} onChange={handleChange}><option>Male</option><option>Female</option><option>Unknown</option></select></div></div><div className="form-group"><label>Breed</label><input name="breed" value={formData.breed} onChange={handleChange}/></div><div className="form-group"><label>Age (years)</label><input name="age" type="number" min="0" value={formData.age} onChange={handleChange}/></div>{error && <p className="form-error" role="alert">{error}</p>}<div className="modal-actions"><button type="button" className="cancel-btn" onClick={closeModal}>Cancel</button><button type="submit" className="save-pet-btn" disabled={busy}><UserRound size={18}/>{busy ? "Saving…" : editing ? "Save Changes" : "Add Pet"}</button></div></form></div></div>}
+  </div>;
+}
+export default MyPets;
+
+
+

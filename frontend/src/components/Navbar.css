@@ -1,0 +1,123 @@
+.navbar {
+  width: 100%;
+  padding: 20px 0;
+  background: transparent;
+}
+
+.navbar-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-family: "Fredoka", sans-serif;
+  font-size: 25px;
+  font-weight: 600;
+  color: var(--green-dark);
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--green-light);
+  color: var(--green-dark);
+
+  border-radius: 13px;
+}
+
+/* Navigation */
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--green-dark);
+}
+
+/* Actions */
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.login-link {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+.get-started-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 12px 19px;
+
+  background: var(--green-dark);
+  color: white;
+
+  border-radius: 14px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.get-started-btn:hover {
+  transform: translateY(-2px);
+  background: #244d3b;
+}
+
+/* Responsive */
+
+@media (max-width: 850px) {
+  .nav-links {
+    display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .navbar-container {
+    width: 92%;
+  }
+
+  .login-link {
+    display: none;
+  }
+
+  .get-started-btn {
+    padding: 10px 14px;
+  }
+}

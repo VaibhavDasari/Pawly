@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap');
+
+:root {
+  --green-dark: #183b2d;
+  --green: #6f9f82;
+  --green-light: #dcebdd;
+
+  --cream: #faf8f1;
+  --cream-dark: #f1eee3;
+
+  --yellow: #f4c95d;
+  --yellow-light: #fff1bf;
+
+  --white: #ffffff;
+  --text: #24352d;
+  --text-light: #68766e;
+
+  font-family: "Nunito", sans-serif;
+  color: var(--text);
+  background: var(--cream);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--cream);
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}.session-actions{display:flex;justify-content:flex-end;align-items:center;gap:12px;color:#617768;font-size:14px;margin:0 0 12px}.session-actions button{display:flex;align-items:center;gap:6px;border:1px solid #dce5de;border-radius:10px;padding:8px 12px;background:#fff;color:#476553;cursor:pointer;font:inherit}
