@@ -10,17 +10,31 @@ export async function api(path, options = {}) {
   try {
     response = await fetch(`${BASE_URL}${path}`, { ...options, headers });
   } catch {
-    throw new Error("Could not reach Pawly. Check that the backend is running and try again.");
+    const error = new Error("Unable to connect to the server. Please try again.");
+    error.isNetworkError = true;
+    throw error;
   }
   if (response.status === 401) {
+    if (path === "/api/auth/login") {
+      const error = new Error("Invalid email or password. Please try again.");
+      error.status = 401;
+      throw error;
+    }
     localStorage.removeItem(TOKEN_KEY);
     window.dispatchEvent(new Event("pawly:unauthorized"));
     throw new Error("Your session has expired. Please log in again.");
   }
   if (!response.ok) {
+    if (path === "/api/auth/login" && response.status >= 500) {
+      const error = new Error("Something went wrong. Please try again later.");
+      error.status = response.status;
+      throw error;
+    }
     let message = response.status === 403 ? "You do not have permission to perform this action." : `Request failed (${response.status}).`;
     try { const data = await response.json(); message = data.message || data.error || message; } catch { /* response has no JSON body */ }
-    throw new Error(message);
+    const error = new Error(message);
+    error.status = response.status;
+    throw error;
   }
   if (response.status === 204) return null;
   return response.json();

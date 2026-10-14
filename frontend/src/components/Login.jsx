@@ -7,7 +7,7 @@ function Login() {
   const { login } = useAuth(); const navigate = useNavigate();
   const [email, setEmail] = useState(""); const [password, setPassword] = useState("");
   const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
-  async function submit(event) { event.preventDefault(); setError(""); setBusy(true); try { await login({ email, password }); navigate("/dashboard", { replace: true }); } catch (err) { setError(err.message || "Unable to log in. Check your details and try again."); } finally { setBusy(false); } }
+  async function submit(event) { event.preventDefault(); setError(""); setBusy(true); try { await login({ email, password }); navigate("/dashboard", { replace: true }); } catch (err) { setError(err.isNetworkError ? "Unable to connect to the server. Please try again." : err.status === 401 ? "Invalid email or password. Please try again." : err.status >= 500 || !err.status ? "Something went wrong. Please try again later." : err.message || "Unable to log in. Please try again."); } finally { setBusy(false); } }
   return <div className="auth-page"><div className="auth-decoration auth-decoration-one"><PawPrint size={70} /></div><div className="auth-decoration auth-decoration-two"><PawPrint size={45} /></div><div className="auth-card">
     <Link to="/" className="auth-back"><ArrowLeft size={16} />Back to Pawly</Link><div className="auth-logo"><div className="auth-logo-icon"><PawPrint size={22} /></div><span>Pawly</span></div>
     <div className="auth-heading"><h1>Welcome back! 🐾</h1><p>Log in to keep taking care of your furry companion.</p></div>
